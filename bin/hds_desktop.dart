@@ -39,10 +39,11 @@ void main(List<String> arguments) async {
 
   print(
     yellowPen(
-      'This desktop app supports one overlay connection and one watch connection at a time.'
-      '\nOverlays must be running on this machine and connect to "localhost" to work.'
-      '\nFor more features such as simultaneous watch connections, please consider using HDS Cloud.'
-      '\nTo run the server on a different port, use the --port flag.',
+      'This desktop app supports one overlay connection and one watch connection at a time'
+      '\nOverlays must be running on this machine and connect to "localhost" to work'
+      '\nFor more features such as simultaneous watch connections, please consider using HDS Cloud'
+      '\nHeart rate data is and will always be free to use with HDS Cloud'
+      '\nTo run the server on a different port, use the --port flag',
     ),
   );
 
@@ -72,13 +73,23 @@ Future<void> checkForUpdates() async {
   );
 
   final remotePubspec = Pubspec.parse(remotePubspecContent.body);
-  if (remotePubspec.version! > version) {
+  final remoteVersion = remotePubspec.version!;
+  if (remoteVersion > version) {
     print(
       magentaPen(
         'There is a new version available: ${remotePubspec.version}'
         '\nVisit https://github.com/Rexios80/hds_desktop/releases to get it',
       ),
     );
+  } else if (version > remoteVersion) {
+    print(
+      magentaPen(
+        'You are running an unreleased version: $version'
+        '\nPlease report any issues you encounter',
+      ),
+    );
+  } else {
+    print(greenPen('You are running the latest version: $version'));
   }
 }
 
