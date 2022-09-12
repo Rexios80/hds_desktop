@@ -1,0 +1,75 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  build_linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dart-lang/setup-dart@v1
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Compile
+        run: dart compile exe bin/hds_desktop.dart -o hds_desktop
+
+      - name: Archive artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux
+          path: hds_desktop
+  build_macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dart-lang/setup-dart@v1
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Compile
+        run: dart compile exe bin/hds_desktop.dart -o hds_desktop
+
+      - name: Archive artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos
+          path: hds_desktop
+  build_windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dart-lang/setup-dart@v1
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Compile
+        run: dart compile exe bin/hds_desktop.dart -o hds_desktop.exe
+
+      - name: Archive artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows
+          path: hds_desktop.exe
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build_linux, build_macos, build_windows]
+    if: success()
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Create release draft
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "linux/*,macos/*,windows/*"
+          draft: true
