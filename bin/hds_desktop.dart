@@ -3,19 +3,21 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:ansicolor/ansicolor.dart';
 import 'package:args/args.dart';
+import 'package:pub_semver/pub_semver.dart';
+import 'package:pubspec_parse/pubspec_parse.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_router/shelf_router.dart';
 import 'package:shelf_web_socket/shelf_web_socket.dart' as shelf_ws;
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:http/http.dart' as http;
+
+final version = Version.parse('1.0.0');
 
 final magentaPen = AnsiPen()..magenta();
 final greenPen = AnsiPen()..green();
 final yellowPen = AnsiPen()..yellow();
 final redPen = AnsiPen()..red();
-
-WebSocketChannel? overlay;
-WebSocketChannel? watch;
 
 final parser = ArgParser()
   ..addOption(
@@ -24,11 +26,21 @@ final parser = ArgParser()
     defaultsTo: '3476',
   );
 
+WebSocketChannel? overlay;
+WebSocketChannel? watch;
+
 void main(List<String> arguments) async {
+  try {
+    await checkForUpdates();
+  } catch (e) {
+    print(redPen('Failed to check for updates'));
+    print(redPen(e));
+  }
+
   print(
     yellowPen(
       'This desktop app supports one overlay connection and one watch connection at a time.'
-      '\nOverlays must be running on this machine to work.'
+      '\nOverlays must be running on this machine and connect to "localhost" to work.'
       '\nFor more features such as simultaneous watch connections, please consider using HDS Cloud.'
       '\nTo run the server on a different port, use the --port flag.',
     ),
@@ -47,9 +59,27 @@ void main(List<String> arguments) async {
     );
 
   final server = await shelf_io.serve(app, '0.0.0.0', port);
-  print('Serving on port ${server.port}');
+  print(greenPen('Serving on port ${server.port}'));
 
   printIpAddresses();
+}
+
+Future<void> checkForUpdates() async {
+  final remotePubspecContent = await http.get(
+    Uri.parse(
+      'https://raw.githubusercontent.com/Rexios80/hds_desktop/master/pubspec.yaml',
+    ),
+  );
+
+  final remotePubspec = Pubspec.parse(remotePubspecContent.body);
+  if (remotePubspec.version! > version) {
+    print(
+      magentaPen(
+        'There is a new version available: ${remotePubspec.version}'
+        '\nVisit https://github.com/Rexios80/hds_desktop/releases to get it',
+      ),
+    );
+  }
 }
 
 void printIpAddresses() async {
@@ -64,7 +94,7 @@ void printIpAddresses() async {
 }
 
 Future<Response> handleHttpRequest(Request request) async {
-  if (watch != null) {
+  if (watch != null && watch?.closeCode == null) {
     print(redPen('Received HTTP request while watch socket is connected'));
     return Response.ok(null);
   }
@@ -78,9 +108,7 @@ Future<Response> handleHttpRequest(Request request) async {
 }
 
 void handleWebSocketConnect(Request request, WebSocketChannel socket) {
-  final info =
-      request.context['shelf.io.connection_info']! as HttpConnectionInfo;
-  if (info.remoteAddress.host == '127.0.0.1') {
+  if (request.requestedUri.host == 'localhost') {
     handleOverlayConnection(socket);
   } else {
     handleWatchConnection(socket);
@@ -93,7 +121,6 @@ void handleOverlayConnection(WebSocketChannel socket) async {
   overlay = socket;
   await socket.sink.done;
   print(yellowPen('Overlay disconnected'));
-  overlay = null;
 }
 
 void handleWatchConnection(WebSocketChannel socket) async {
@@ -103,13 +130,12 @@ void handleWatchConnection(WebSocketChannel socket) async {
   socket.stream.listen((e) => handleData(e));
   await socket.sink.done;
   print(yellowPen('Watch disconnected'));
-  watch = null;
 }
 
 void handleData(String data) {
   print('Received data: $data');
 
-  if (overlay == null) {
+  if (overlay == null || overlay?.closeCode != null) {
     print(redPen('Overlay not connected'));
     return;
   }
