@@ -29,7 +29,19 @@ final parser = ArgParser()
 WebSocketChannel? overlay;
 WebSocketChannel? watch;
 
-void main(List<String> arguments) async {
+void main(List<String> arguments) {
+  runZonedGuarded(
+    () => run(arguments),
+    (e, s) => print(
+      redPen(
+        'Something terrible has happened'
+        '\n$e',
+      ),
+    ),
+  );
+}
+
+Future<void> run(List<String> arguments) async {
   try {
     await checkForUpdates();
   } catch (e) {
