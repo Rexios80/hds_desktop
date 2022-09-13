@@ -47,7 +47,7 @@ jobs:
 
       - name: Code sign
         run: |
-          codesign -s "Apple Development: Aaron DeLory (DZAKJMBC74)" hds_desktop
+          codesign -s "Apple Development: Aaron DeLory (5JA5H6L29F)" hds_desktop
 
       - name: Archive artifact
         uses: actions/upload-artifact@v3
