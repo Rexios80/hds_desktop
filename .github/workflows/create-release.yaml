@@ -45,21 +45,22 @@ jobs:
           # The password used to import the PKCS12 file.
           p12-password: ${{ secrets.DISTRIBUTION_CERTIFICATE_PASSPHRASE }}
 
-      - name: Install gon via HomeBrew
-        run: |
-          brew tap mitchellh/gon
-          brew install mitchellh/gon/gon
+      - name: Install gon via Homebrew
+        run: brew install mitchellh/gon/gon
 
-      - name: Sign the binary
+      - name: Sign and notarize
         env:
           NOTARIZATION_PASSWORD: ${{ secrets.NOTARIZATION_PASSWORD }}
         run: gon macos/gon.json
+      
+      - name: Unzip signed artifact
+        run: unzip build/hds_desktop.zip
 
       - name: Archive artifact
         uses: actions/upload-artifact@v3
         with:
           name: macos
-          path: hds_desktop.zip
+          path: build/hds_desktop
 
   build_windows:
     runs-on: windows-latest
