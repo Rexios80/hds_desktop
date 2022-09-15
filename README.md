@@ -19,7 +19,8 @@ The new desktop app for HDS
    
 ### MacOS
 
-1. 
+1. Unzip the downloaded file and run it
+2. 
 
 ## Usage
 

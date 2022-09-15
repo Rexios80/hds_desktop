@@ -1,6 +1,6 @@
 {
     "source": [
-        "hds_desktop"
+        "hds_desktop_macos"
     ],
     "bundle_id": "com.rexios.hdsDesktop",
     "apple_id": {
