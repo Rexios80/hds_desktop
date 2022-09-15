@@ -38,27 +38,27 @@ jobs:
         run: dart compile exe bin/hds_desktop.dart -o hds_desktop_macos
 
       # TODO: Make notarization work
-      # - name: Import Code-Signing Certificates
-      #   uses: Apple-Actions/import-codesign-certs@v1
-      #   with:
-      #     # The certificates in a PKCS12 file encoded as a base64 string
-      #     p12-file-base64: ${{ secrets.DISTRIBUTION_CERTIFICATE_DATA }}
-      #     # The password used to import the PKCS12 file.
-      #     p12-password: ${{ secrets.DISTRIBUTION_CERTIFICATE_PASSPHRASE }}
+      - name: Import Code-Signing Certificates
+        uses: Apple-Actions/import-codesign-certs@v1
+        with:
+          # The certificates in a PKCS12 file encoded as a base64 string
+          p12-file-base64: ${{ secrets.DISTRIBUTION_CERTIFICATE_DATA }}
+          # The password used to import the PKCS12 file.
+          p12-password: ${{ secrets.DISTRIBUTION_CERTIFICATE_PASSPHRASE }}
 
-      # - name: Install gon via Homebrew
-      #   run: brew install mitchellh/gon/gon
+      - name: Install gon via Homebrew
+        run: brew install mitchellh/gon/gon
 
-      # - name: Sign and notarize
-      #   env:
-      #     NOTARIZATION_PASSWORD: ${{ secrets.NOTARIZATION_PASSWORD }}
-      #   run: gon macos/gon.json
+      - name: Sign and notarize
+        env:
+          NOTARIZATION_PASSWORD: ${{ secrets.NOTARIZATION_PASSWORD }}
+        run: gon macos/gon.json
 
       - name: Archive artifact
         uses: actions/upload-artifact@v3
         with:
           name: macos
-          path: hds_desktop_macos
+          path: build/hds_desktop_macos.zip
 
   build_windows:
     runs-on: windows-latest
