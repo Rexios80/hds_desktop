@@ -45,15 +45,14 @@ chmod +x hds_desktop_linux
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
-```dart
-const like = 'sample';
-```
+<!-- TODO: Remove step 2 if Apple ever fixes their crap -->
+1. Disable HDS Cloud in the watch app and overlay settings
+2. If your watch is running watchOS 9, enable REST Fallback in the watch app settings
+3. The desktop app will list possible IP addresses of your machine. Pick the correct one and input it into the watch app settings.
+4. Everything else is the same as with HDS Cloud
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+If you need to change the port, run the binary with the `--port` flag
+
+For additional help, join the [Discord server](https://discord.gg/FayYYcm)
