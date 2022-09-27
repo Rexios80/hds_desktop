@@ -27,7 +27,6 @@ final parser = ArgParser()
   );
 
 WebSocketChannel? overlay;
-WebSocketChannel? watch;
 
 void main(List<String> arguments) {
   runZonedGuarded(
@@ -117,11 +116,6 @@ void printIpAddresses() async {
 }
 
 Future<Response> handleHttpRequest(Request request) async {
-  if (watch != null && watch?.closeCode == null) {
-    print(redPen('Received HTTP request while watch socket is connected'));
-    return Response.ok(null);
-  }
-
   final body = await request.readAsString();
   final json = jsonDecode(body);
   final data = json['data'];
@@ -134,7 +128,7 @@ void handleWebSocketConnect(Request request, WebSocketChannel socket) {
   if (request.requestedUri.host == 'localhost') {
     handleOverlayConnection(socket);
   } else {
-    handleWatchConnection(socket);
+    print(redPen('Rejecting connection from ${request.requestedUri.host}'));
   }
 }
 
@@ -144,15 +138,6 @@ void handleOverlayConnection(WebSocketChannel socket) async {
   overlay = socket;
   await socket.sink.done;
   print(yellowPen('Overlay disconnected'));
-}
-
-void handleWatchConnection(WebSocketChannel socket) async {
-  await watch?.sink.close();
-  print(greenPen('Watch connected'));
-  watch = socket;
-  socket.stream.listen((e) => handleData(e));
-  await socket.sink.done;
-  print(yellowPen('Watch disconnected'));
 }
 
 void handleData(String data) {
