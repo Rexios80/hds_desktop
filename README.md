@@ -5,8 +5,7 @@ The new desktop app for HDS
 - Local connection for one overlay and one watch
 - Connection support:
   - Overlays with websocket
-  - Watches with websocket
-  - Watches with REST Fallback
+  - Watches with REST connections
 
 ## Getting started
 
@@ -45,11 +44,9 @@ chmod +x hds_desktop_linux
 
 ## Usage
 
-<!-- TODO: Remove step 2 if Apple ever fixes their crap -->
 1. Disable HDS Cloud in the watch app and overlay settings
-2. If your watch is running watchOS 9, enable REST Fallback in the watch app settings
-3. The desktop app will list possible IP addresses of your machine. Pick the correct one and input it into the watch app settings.
-4. Everything else is the same as with HDS Cloud
+2. The desktop app will list possible IP addresses of your machine. Pick the correct one and input it into the watch app settings.
+3. Everything else is the same as with HDS Cloud
 
 ## Additional information
 
