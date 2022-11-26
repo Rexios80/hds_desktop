@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:ansicolor/ansicolor.dart';
 import 'package:args/args.dart';
 import 'package:pub_semver/pub_semver.dart';
-import 'package:pubspec_parse/pubspec_parse.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_router/shelf_router.dart';
@@ -77,18 +76,20 @@ Future<void> run(List<String> arguments) async {
 }
 
 Future<void> checkForUpdates() async {
-  final remotePubspecContent = await http.get(
+  final response = await http.get(
     Uri.parse(
-      'https://raw.githubusercontent.com/Rexios80/hds_desktop/master/pubspec.yaml',
+      'https://raw.githubusercontent.com/Rexios80/hds_desktop/master/bin/hds_desktop.dart',
     ),
   );
 
-  final remotePubspec = Pubspec.parse(remotePubspecContent.body);
-  final remoteVersion = remotePubspec.version!;
+  final remoteVersionString =
+      RegExp(r"final version = Version\.parse\('(.*)'\);")
+          .firstMatch(response.body)![1]!;
+  final remoteVersion = Version.parse(remoteVersionString);
   if (remoteVersion > version) {
     print(
       magentaPen(
-        'There is a new version available: ${remotePubspec.version}'
+        'There is a new version available: $remoteVersion'
         '\nVisit https://github.com/Rexios80/hds_desktop/releases to get it',
       ),
     );
