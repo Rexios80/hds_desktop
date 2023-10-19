@@ -69,7 +69,7 @@ Future<void> run(List<String> arguments) async {
       )(request),
     );
 
-  final server = await shelf_io.serve(app, '0.0.0.0', port);
+  final server = await shelf_io.serve(app.call, '0.0.0.0', port);
   print(greenPen('Serving on port ${server.port}'));
 
   printIpAddresses();

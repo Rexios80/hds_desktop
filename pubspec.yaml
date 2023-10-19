@@ -1,7 +1,7 @@
 name: hds_desktop
 
 environment:
-  sdk: ">=2.18.0 <3.0.0"
+  sdk: ^3.0.0
 
 dependencies:
   shelf: ^1.3.2
@@ -12,7 +12,7 @@ dependencies:
   args: ^2.3.1
   ansicolor: ^2.0.1
   pub_semver: ^2.1.1
-  http: ^0.13.5
+  http: ^1.1.0
 
 dev_dependencies:
-  rexios_lints: ^5.0.0
+  rexios_lints: ^6.0.1
