@@ -11,7 +11,7 @@ import 'package:shelf_web_socket/shelf_web_socket.dart' as shelf_ws;
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:http/http.dart' as http;
 
-final version = Version.parse('0.2.1');
+final version = Version.parse('0.2.2');
 
 final magentaPen = AnsiPen()..magenta();
 final greenPen = AnsiPen()..green();
