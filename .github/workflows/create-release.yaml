@@ -30,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.type.name }}
-          path: hds_desktop
+          path: hds_desktop_${{ matrix.type.name }}
 
   deploy:
     runs-on: ubuntu-latest
