@@ -13,7 +13,7 @@ The new desktop app for HDS
 2. Complete the steps required by your platform to run the app
 
 <details>
-  <summary>Windows</summary>
+<summary>Windows</summary>
 
 1. Run the downloaded file
 2. Click "Allow access" on this popup
@@ -21,24 +21,35 @@ The new desktop app for HDS
 </details>
    
 <details>
-  <summary>MacOS</summary>
+<summary>MacOS</summary>
 
-1. Unzip the downloaded file and run it
+1. Run the following in a terminal:
+```bash
+chmod +x hds_desktop_macos_intel
+```
+OR
+```bash
+chmod +x hds_desktop_macos_apple_silicon
+```
+
 2. Press "OK" on this popup:
 ![](https://i.imgur.com/2ZLn590.png)
+
 3. Open System Preferences > Security & Privacy > General and click "Open Anyway"
 ![](https://i.imgur.com/CcyEWa3.png)
+
 4. Click "Open" on this popup
 ![](https://i.imgur.com/JpTF1wR.png)
 </details>
 
 <details>
-  <summary>Linux</summary>
+<summary>Linux</summary>
 
 1. Run the following in a terminal:
 ```bash
 chmod +x hds_desktop_linux
 ```
+
 2. Run the app
 </details>
 
