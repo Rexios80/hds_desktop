@@ -37,7 +37,7 @@ The new desktop app for HDS
 
 1. Run the following in a terminal:
 ```bash
-chmod +x hds_desktop_linux
+chmod +x hds_desktop
 ```
 2. Run the app
 </details>
