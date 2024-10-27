@@ -14,7 +14,7 @@ jobs:
           - { name: linux, os: ubuntu-latest }
           - { name: macos_intel, os: macos-latest }
           - { name: macos_apple_silicon, os: flyci-macos-large-latest-m1 }
-          - { name: windows, os: windows-latest }
+          - { name: windows, os: windows-latest, extension: .exe }
     runs-on: ${{ matrix.type.os }}
     steps:
       - uses: actions/checkout@v4
@@ -24,7 +24,7 @@ jobs:
         run: dart pub get
 
       - name: Compile
-        run: dart compile exe bin/hds_desktop.dart -o hds_desktop_${{ matrix.type.name }}
+        run: dart compile exe bin/hds_desktop.dart -o hds_desktop_${{ matrix.type.name }}${{ matrix.type.extension }}
 
       - name: Archive artifact
         uses: actions/upload-artifact@v4
